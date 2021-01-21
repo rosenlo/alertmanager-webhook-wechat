@@ -1,14 +1,13 @@
-package utils
+package util
 
 import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/rosenlo/toolkits/log"
 )
 
 const (
@@ -25,12 +24,11 @@ var DefaultTransport = &http.Transport{
 	}).Dial,
 }
 
-func RestRequest(method, url string, body interface{}, headers map[string]string) error {
-	log := log.WithField("method", method).WithField("url", url)
+func RestRequest(method, url string, body interface{}, headers map[string]string) ([]byte, error) {
 	data, err := json.Marshal(body)
 	if err != nil {
-		log.Error("jsonMarshal Failed due to ", err)
-		return err
+		log.Printf("[error] jsonMarshal failed due to %s", err)
+		return nil, err
 	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(data))
@@ -42,17 +40,17 @@ func RestRequest(method, url string, body interface{}, headers map[string]string
 	client := &http.Client{Transport: DefaultTransport}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("http post failed due to ", err)
-		return err
+		log.Printf("[error] http post failed due to %s", err)
+		return nil, err
 	}
-	log.WithField("status", resp.Status)
 
 	defer resp.Body.Close()
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error(err)
-		return err
+		log.Printf("[error] could't read response body due to %s", err)
+		return nil, err
 	}
-	log.WithField("response", string(respBody)).Debug()
-	return nil
+
+	log.Printf("[debug] response: %s", string(respBody))
+	return respBody, nil
 }

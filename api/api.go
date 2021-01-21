@@ -1,14 +1,14 @@
-package service
+package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/rosenlo/wecom-webhook/pkg/wecom-webhook/service/v1"
+	"github.com/rosenlo/alertmanager-webhook-wechat/api/v1"
 )
 
 type Service interface {
 	WebService() *gin.Engine
 }
 
-func NewService() Service {
+func New() Service {
 	return new(v1.Service)
 }

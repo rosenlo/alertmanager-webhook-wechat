@@ -1,1 +1,1 @@
-# WeCom-Webhook
+# Alertmanager-Webhook-Wechat

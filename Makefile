@@ -2,8 +2,8 @@ include $(shell pwd)/build/Makefile
 
 .PHONY:image
 image:
-	@cd $(WORKSPACE)/cmd/wecom-webhook/ && make VERSION=${VERSION}
-	@docker build -t wecom-webhook:${VERSION} -f build/Dockerfile ./build
+	@cd $(shell pwd)/cmd/webhook-wechat/ && make VERSION=${VERSION}
+	@docker build -t rosenpy/alertmanager-webhook-wechat:${VERSION} -f build/Dockerfile ./build
 
 .PHONY:clean
 clean:
